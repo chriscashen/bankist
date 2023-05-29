@@ -78,6 +78,8 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 
+
+// DISPAY TRANSATIONS 
 const displayTranactions = (account: Account) => {
   // CLEAR CONTAINER
   containerMovements.innerHTML = '';
@@ -144,8 +146,9 @@ const deposits =  filterMovement(account1, MovementFilter.DEPOSIT)
 const withdrawals = filterMovement(account2, MovementFilter.WITHDRAWAL)
 
 // ACCOUNT BALANCE
-// const accountBalance = (account: Account): number => {
-//   return account.movements.reduce()
-// }
+const accountBalance = (account: Account): number => {
+  return account.movements.reduce((acc, cur) => acc + cur, 0)
+}
 
+console.log(accountBalance(account1))
 
