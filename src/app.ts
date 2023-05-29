@@ -1,5 +1,7 @@
 'use strict';
-
+import { Account } from "./types/AccountType";
+import { Currency } from "./emums/Currency";
+import { rates } from "./constants/Rates";
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // BANKIST APP
@@ -45,7 +47,7 @@ const labelSumInterest = document.querySelector('.summary__value--interest');
 const labelTimer = document.querySelector('.timer');
 
 const containerApp = document.querySelector('.app');
-const containerMovements = document.querySelector('.movements');
+const containerMovements = document.querySelector('.movements') as HTMLElement;
 
 const btnLogin = document.querySelector('.login__btn');
 const btnTransfer = document.querySelector('.form__btn--transfer');
@@ -74,3 +76,58 @@ const currencies = new Map([
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
+
+const displayTranactions = (account: Account) => {
+  // CLEAR CONTAINER
+  containerMovements.innerHTML = '';
+  // CREATE A TILE FOR EACH ACCOUNT MOVEMENT
+  account.movements.forEach((mov, i) => {
+
+    const type = mov > 0 ? 'deposit' : 'withdrawal'
+
+    const html = `
+    <div class="movements__row">
+      <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+      <div class="movements__value">${mov}</div>
+    </div>`;
+    // RENDER TILES
+    containerMovements.insertAdjacentHTML('afterbegin', html)
+  });
+
+}
+
+// CONVERT CURRENCY FUNCTION
+const convertCurrancy= (amount: number, to: Currency, from: Currency): number => {
+  const fromRate = rates[from];
+    const toRate = rates[to];
+    if (fromRate && toRate) {
+      return (amount / fromRate) * toRate;
+    } else {
+      throw new Error('Invalid currency');
+    }
+  }
+
+// CONVERTED FROM EUR TO USD
+const movementsUSD = movements.map((movement) => {
+  return convertCurrancy(movement, Currency.USD, Currency.EUR)
+})
+
+// CREATE MOVEMENT TILE DATA
+const movementsDisplay = (movements: number[]): string[] => {
+  const movementTiles = movements.map((mov , i) => {
+    return `Movement ${i + 1}: You ${mov > 0 ? 'deposited' : 'withdrew'} ${mov}`
+  })
+  return movementTiles
+}
+
+
+// GERERATE USERNAMES
+const createUserName = (accounts: Account[]): void => {
+  accounts.forEach(account => {
+    account.userName = account.owner.toLowerCase().split(' ').reduce((acc, cur) => acc[0] + cur[0])
+  });
+}
+
+createUserName(accounts);
+
+console.log(accounts)
