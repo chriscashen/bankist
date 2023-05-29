@@ -1,6 +1,7 @@
 'use strict';
 import { Account } from "./types/AccountType";
 import { Currency } from "./emums/Currency";
+import { MovementFilter } from "./emums/MovementFilter";
 import { rates } from "./constants/Rates";
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -124,10 +125,27 @@ const movementsDisplay = (movements: number[]): string[] => {
 // GERERATE USERNAMES
 const createUserName = (accounts: Account[]): void => {
   accounts.forEach(account => {
-    account.userName = account.owner.toLowerCase().split(' ').reduce((acc, cur) => acc[0] + cur[0])
+    account.userName = account.owner.toLowerCase().split(' ').reduce((userName, name) => userName + name[0], '')
   });
 }
 
-createUserName(accounts);
+// FILTER MOVEMENTS
+const filterMovement = (account: Account, filter: MovementFilter): number[] | undefined => {
+  switch (filter) {
+    case MovementFilter.DEPOSIT:
+      return account.movements.filter(mov => mov > 0)
+    case MovementFilter.WITHDRAWAL:
+      return account.movements.filter(mov => mov < 0)
+    default:
+        console.log('Invalid transaction type');
+  }
+}
+const deposits =  filterMovement(account1, MovementFilter.DEPOSIT)
+const withdrawals = filterMovement(account2, MovementFilter.WITHDRAWAL)
 
-console.log(accounts)
+// ACCOUNT BALANCE
+// const accountBalance = (account: Account): number => {
+//   return account.movements.reduce()
+// }
+
+
