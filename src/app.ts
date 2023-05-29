@@ -41,7 +41,7 @@ const accounts = [account1, account2, account3, account4];
 // Elements
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
-const labelBalance = document.querySelector('.balance__value');
+const labelBalance = document.querySelector('.balance__value') as HTMLElement;
 const labelSumIn = document.querySelector('.summary__value--in');
 const labelSumOut = document.querySelector('.summary__value--out');
 const labelSumInterest = document.querySelector('.summary__value--interest');
@@ -96,8 +96,15 @@ const displayTranactions = (account: Account) => {
     // RENDER TILES
     containerMovements.insertAdjacentHTML('afterbegin', html)
   });
-
 }
+// DISPLAY ACCOUNT BALANCE
+const displayBalance = function(account: Account): void {
+  const accountBalance = account.movements.reduce((acc, cur) => acc + cur, 0)
+  labelBalance.textContent = `${accountBalance} EUR`
+}
+
+displayBalance(account1)
+
 
 // CONVERT CURRENCY FUNCTION
 const convertCurrancy= (amount: number, to: Currency, from: Currency): number => {
@@ -150,5 +157,4 @@ const accountBalance = (account: Account): number => {
   return account.movements.reduce((acc, cur) => acc + cur, 0)
 }
 
-console.log(accountBalance(account1))
 
