@@ -42,8 +42,8 @@ const accounts = [account1, account2, account3, account4];
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
 const labelBalance = document.querySelector('.balance__value') as HTMLElement;
-const labelSumIn = document.querySelector('.summary__value--in');
-const labelSumOut = document.querySelector('.summary__value--out');
+const labelSumIn = document.querySelector('.summary__value--in') as HTMLElement;
+const labelSumOut = document.querySelector('.summary__value--out') as HTMLElement;
 const labelSumInterest = document.querySelector('.summary__value--interest');
 const labelTimer = document.querySelector('.timer');
 
@@ -98,7 +98,7 @@ const displayTranactions = (account: Account) => {
   });
 }
 // DISPLAY ACCOUNT BALANCE
-const displayBalance = function(account: Account): void {
+const displayBalance = function (account: Account): void {
   const accountBalance = account.movements.reduce((acc, cur) => acc + cur, 0)
   labelBalance.textContent = `${accountBalance} EUR`
 }
@@ -107,15 +107,15 @@ displayBalance(account1)
 
 
 // CONVERT CURRENCY FUNCTION
-const convertCurrancy= (amount: number, to: Currency, from: Currency): number => {
+const convertCurrancy = (amount: number, to: Currency, from: Currency): number => {
   const fromRate = rates[from];
-    const toRate = rates[to];
-    if (fromRate && toRate) {
-      return (amount / fromRate) * toRate;
-    } else {
-      throw new Error('Invalid currency');
-    }
+  const toRate = rates[to];
+  if (fromRate && toRate) {
+    return (amount / fromRate) * toRate;
+  } else {
+    throw new Error('Invalid currency');
   }
+}
 
 // CONVERTED FROM EUR TO USD
 const movementsUSD = movements.map((movement) => {
@@ -124,7 +124,7 @@ const movementsUSD = movements.map((movement) => {
 
 // CREATE MOVEMENT TILE DATA
 const movementsDisplay = (movements: number[]): string[] => {
-  const movementTiles = movements.map((mov , i) => {
+  const movementTiles = movements.map((mov, i) => {
     return `Movement ${i + 1}: You ${mov > 0 ? 'deposited' : 'withdrew'} ${mov}`
   })
   return movementTiles
@@ -146,10 +146,10 @@ const filterMovement = (account: Account, filter: MovementFilter): number[] | un
     case MovementFilter.WITHDRAWAL:
       return account.movements.filter(mov => mov < 0)
     default:
-        console.log('Invalid transaction type');
+      console.log('Invalid transaction type');
   }
 }
-const deposits =  filterMovement(account1, MovementFilter.DEPOSIT)
+const deposits = filterMovement(account1, MovementFilter.DEPOSIT)
 const withdrawals = filterMovement(account2, MovementFilter.WITHDRAWAL)
 
 // ACCOUNT BALANCE
@@ -158,3 +158,28 @@ const accountBalance = (account: Account): number => {
 }
 
 
+// MAX DEPOSIT
+const maxDeposit = (account: Account): number => {
+  const movements = account.movements
+  return movements.reduce((acc, mov) =>  acc > mov ? acc : mov ,movements[0])
+}
+
+
+// DISPLAY DEPOSIT SUMMARY
+const displayDeposits = (account: Account): void => {
+  const total = filterMovement(account, MovementFilter.DEPOSIT)?.reduce((acc, cur) => acc + cur, 0)
+  console.log(total)
+  labelSumIn.textContent = `${total}`
+}
+
+// DISPLAY WITHDRAWL SUMMARY
+const displayWidthdrawl = (account: Account): void => {
+  const total = filterMovement(account, MovementFilter.WITHDRAWAL)?.reduce((acc, cur) => acc + cur, 0)
+  console.log(total)
+  labelSumOut.textContent = `${total}`
+}
+
+displayDeposits(account1)
+displayWidthdrawl(account1)
+
+// DISPLAY WITHDRAWL SUMMARY
