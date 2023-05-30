@@ -39,7 +39,7 @@ const account4 = {
   pin: 4444,
 };
 
-const accounts = [account1, account2, account3, account4];
+const accounts: Account[] = [account1, account2, account3, account4];
 
 
 /////////////////////////////////////////////////
@@ -62,13 +62,13 @@ const btnLoan = <HTMLButtonElement>document.querySelector('.form__btn--loan');
 const btnClose = <HTMLButtonElement>document.querySelector('.form__btn--close');
 const btnSort = <HTMLButtonElement>document.querySelector('.btn--sort');
 
-const inputLoginUsername = <HTMLButtonElement>document.querySelector('.login__input--user');
+const inputLoginUsername = <HTMLInputElement>document.querySelector('.login__input--user');
 const inputLoginPin = <HTMLInputElement>document.querySelector('.login__input--pin');
-const inputTransferTo = <HTMLButtonElement>document.querySelector('.form__input--to');
-const inputTransferAmount = <HTMLButtonElement>document.querySelector('.form__input--amount');
-const inputLoanAmount = document.querySelector('.form__input--loan-amount');
-const inputCloseUsername = document.querySelector('.form__input--user');
-const inputClosePin = document.querySelector('.form__input--pin');
+const inputTransferTo = <HTMLInputElement>document.querySelector('.form__input--to');
+const inputTransferAmount = <HTMLInputElement>document.querySelector('.form__input--amount');
+const inputLoanAmount = <HTMLInputElement>document.querySelector('.form__input--loan-amount');
+const inputCloseUsername = <HTMLInputElement>document.querySelector('.form__input--user');
+const inputClosePin = <HTMLInputElement>document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -291,7 +291,7 @@ btnLogin.addEventListener('click', (e: Event) => {
 })
 
 
-
+/// TRANSFER BUTTON HANDLER
 btnTransfer.addEventListener("click", (e: Event) => {
   e.preventDefault()
 
@@ -328,10 +328,27 @@ btnTransfer.addEventListener("click", (e: Event) => {
   inputTransferTo.blur()
 })
 
-/// TRANSER FUNDS HANDLER
-const transerFundsHandler = () => {
+/// CLOSE ACCOUNT BUTTON
+btnClose.addEventListener('click', (e:Event) => {
+  e.preventDefault();
 
-}
+  // verifiy current account
+  const pin = +inputClosePin.value
+  const userName = inputCloseUsername.value
+
+  if (pin !== currentAccount?.pin || userName !== currentAccount?.userName){
+    alert(`please verify your credentials`)
+    return
+  }
+
+  const index = accounts.findIndex((acc: Account) => acc.userName === userName )
+
+  accounts.splice(index, 1)
+
+  containerApp.style.opacity = '0';
+
+  inputClosePin.value = inputCloseUsername.value = ''
+})
 
 
 
