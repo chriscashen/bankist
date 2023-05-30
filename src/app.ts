@@ -87,11 +87,16 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 /////////////////////////////////////////////////
 // DISPAY FUNCTIONS
 /////////////////////////////////////////////////
-const displayTranactions = (account: Account) => {
+const displayTranactions = (account: Account, sort: boolean = false) => {
   // CLEAR CONTAINER
   containerMovements.innerHTML = '';
   // CREATE A TILE FOR EACH ACCOUNT MOVEMENT
-  account.movements.forEach((mov, i) => {
+
+  // SORT MOVEMENTS
+  const movs = sort ? account.movements.slice().sort((a,b) => a - b) : account.movements
+
+
+  movs.forEach((mov, i) => {
 
     const type = mov > 0 ? 'deposit' : 'withdrawal'
 
@@ -133,6 +138,7 @@ const displayInterestSummary = (account: Account): void => {
   labelSumInterest.textContent = `${total}€`
 }
 
+// UPDATE ALL DISPLAY VALUES
 const updateUI = (account: Account): void => {
   displayTranactions(account)
   displayBalance(account)
@@ -140,6 +146,18 @@ const updateUI = (account: Account): void => {
   displayInterestSummary(account)
   displayWidthdrawls(account)
 }
+
+// SORT MOVEMENTS
+const sortAscending = (account: Account): void => {
+  account.movements.sort((a: number, b: number) => a - b);
+};
+
+const sortDecending = (account: Account): void => {
+  account.movements.sort((a: number, b: number) => b - a)
+};
+
+
+
 
 /////////////////////////////////////////////////
 // RETURN FUNCTIONS
@@ -329,19 +347,19 @@ btnTransfer.addEventListener("click", (e: Event) => {
 })
 
 /// CLOSE ACCOUNT BUTTON
-btnClose.addEventListener('click', (e:Event) => {
+btnClose.addEventListener('click', (e: Event) => {
   e.preventDefault();
 
   // verifiy current account
   const pin = +inputClosePin.value
   const userName = inputCloseUsername.value
 
-  if (pin !== currentAccount?.pin || userName !== currentAccount?.userName){
+  if (pin !== currentAccount?.pin || userName !== currentAccount?.userName) {
     alert(`please verify your credentials`)
     return
   }
 
-  const index = accounts.findIndex((acc: Account) => acc.userName === userName )
+  const index = accounts.findIndex((acc: Account) => acc.userName === userName)
 
   accounts.splice(index, 1)
 
@@ -350,11 +368,11 @@ btnClose.addEventListener('click', (e:Event) => {
   inputClosePin.value = inputCloseUsername.value = ''
 })
 
-
-btnLoan.addEventListener("click", (e:Event) => {
+// REQUEST LOAN
+btnLoan.addEventListener("click", (e: Event) => {
   const loanAmount = +inputLoanAmount.value
 
-  if(loanAmount > 0 && currentAccount?.movements.some(mov => mov >= loanAmount * 0.1)) {
+  if (loanAmount > 0 && currentAccount?.movements.some(mov => mov >= loanAmount * 0.1)) {
     currentAccount.movements.push(loanAmount)
     updateUI(currentAccount)
   }
@@ -362,6 +380,13 @@ btnLoan.addEventListener("click", (e:Event) => {
   inputLoanAmount.value = ''
   inputLoanAmount.blur()
 
+})
+
+// SORT MOVEMENTS
+btnSort.addEventListener('click', (e:Event)=> {
+  e.preventDefault()
+  displayTranactions(currentAccount!, !sorted)
+  sorted = !sorted
 })
 
 
@@ -387,5 +412,6 @@ const handleAddFunds = (account: Account) => {
 /////////////////////////////////////////////////
 // CURRENT ACCOUNT
 let currentAccount: Account | undefined;
+let sorted: Boolean = false;
 // ASSIGN USERNAMES TO ACCOUNTS
 createUserNames(accounts);
