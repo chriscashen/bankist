@@ -93,7 +93,7 @@ const displayTranactions = (account: Account, sort: boolean = false) => {
   // CREATE A TILE FOR EACH ACCOUNT MOVEMENT
 
   // SORT MOVEMENTS
-  const movs = sort ? account.movements.slice().sort((a,b) => a - b) : account.movements
+  const movs = sort ? account.movements.slice().sort((a, b) => a - b) : account.movements
 
 
   movs.forEach((mov, i) => {
@@ -383,7 +383,7 @@ btnLoan.addEventListener("click", (e: Event) => {
 })
 
 // SORT MOVEMENTS
-btnSort.addEventListener('click', (e:Event)=> {
+btnSort.addEventListener('click', (e: Event) => {
   e.preventDefault()
   displayTranactions(currentAccount!, !sorted)
   sorted = !sorted
@@ -415,3 +415,10 @@ let currentAccount: Account | undefined;
 let sorted: Boolean = false;
 // ASSIGN USERNAMES TO ACCOUNTS
 createUserNames(accounts);
+
+// SET DATE
+const setLoginDate = () => {
+  const now = new Date;
+  console.log(labelDate.textContent = new Intl.DateTimeFormat('en-US').format(now))
+}
+setLoginDate()
