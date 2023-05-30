@@ -251,6 +251,9 @@ const handleTranferFunds = (fromAccount: Account, toAccount: Account, amount: nu
 
   // refresh account
   updateUI(fromAccount)
+
+  inputTransferAmount.value = ''
+  inputTransferTo.value = '';
 }
 
 
@@ -318,6 +321,11 @@ btnTransfer.addEventListener("click", (e: Event) => {
   // Handle Transfer
   handleTranferFunds(currentAccount!, toAccount, amount)
 
+  // Clear Focus
+  inputTransferAmount.value = ''
+  inputTransferTo.value = '';
+  inputTransferAmount.blur()
+  inputTransferTo.blur()
 })
 
 /// TRANSER FUNDS HANDLER
