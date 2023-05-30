@@ -3,6 +3,7 @@ import { Account } from "./types/AccountType";
 import { Currency } from "./emums/Currency";
 import { MovementFilter } from "./emums/MovementFilter";
 import { rates } from "./constants/Rates";
+import { AccountProperty } from "./emums/AccountProperty";
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // BANKIST APP
@@ -44,7 +45,7 @@ const labelDate = document.querySelector('.date');
 const labelBalance = document.querySelector('.balance__value') as HTMLElement;
 const labelSumIn = document.querySelector('.summary__value--in') as HTMLElement;
 const labelSumOut = document.querySelector('.summary__value--out') as HTMLElement;
-const labelSumInterest = document.querySelector('.summary__value--interest');
+const labelSumInterest = document.querySelector('.summary__value--interest') as HTMLElement;
 const labelTimer = document.querySelector('.timer');
 
 const containerApp = document.querySelector('.app');
@@ -103,9 +104,6 @@ const displayBalance = function (account: Account): void {
   labelBalance.textContent = `${accountBalance} EUR`
 }
 
-displayBalance(account1)
-
-
 // CONVERT CURRENCY FUNCTION
 const convertCurrancy = (amount: number, to: Currency, from: Currency): number => {
   const fromRate = rates[from];
@@ -161,25 +159,50 @@ const accountBalance = (account: Account): number => {
 // MAX DEPOSIT
 const maxDeposit = (account: Account): number => {
   const movements = account.movements
-  return movements.reduce((acc, mov) =>  acc > mov ? acc : mov ,movements[0])
+  return movements.reduce((acc, mov) => acc > mov ? acc : mov, movements[0])
 }
 
 
 // DISPLAY DEPOSIT SUMMARY
 const displayDeposits = (account: Account): void => {
   const total = filterMovement(account, MovementFilter.DEPOSIT)?.reduce((acc, cur) => acc + cur, 0)
-  console.log(total)
-  labelSumIn.textContent = `${total}`
+
+  labelSumIn.textContent = `${total}€`
 }
 
 // DISPLAY WITHDRAWL SUMMARY
 const displayWidthdrawl = (account: Account): void => {
   const total = filterMovement(account, MovementFilter.WITHDRAWAL)?.reduce((acc, cur) => acc + cur, 0)
-  console.log(total)
-  labelSumOut.textContent = `${total}`
+
+  labelSumOut.textContent = `${total}€`
+}
+
+// DISPLAY INTEREST SUMMARY
+const displayInterestSummary = (account: Account): void => {
+  const deposits = filterMovement(account, MovementFilter.DEPOSIT)  
+  // TOTAL PAYMENTS
+  const total =  deposits?.map(deposit => deposit * 0.012).reduce((acc, int) => acc + int, 0)
+  //  DISPLAY SUM
+  labelSumInterest.textContent = `${total}€`
 }
 
 displayDeposits(account1)
 displayWidthdrawl(account1)
+displayBalance(account1)
+displayInterestSummary(account1)
 
-// DISPLAY WITHDRAWL SUMMARY
+
+// FIND ACCOUNT BY NAME
+
+const findAccountBy = (accounts: Account[], by: AccountProperty, searchTerm: string): Account | undefined => {
+  const account = accounts.find(acc => acc[by] === searchTerm)
+  return account
+}
+
+const findAccountByName = (accounts: Account[] , owner: string): Account | undefined => {
+  const account = accounts.find(acc => acc.owner === owner)
+  return account
+}
+
+
+console.log(findAccountBy(accounts, AccountProperty.Owner, `Sarah Smith`))
