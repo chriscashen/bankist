@@ -11,11 +11,11 @@ npm
 Installation
 1. Clone the repository:
 ```
-git clone https://github.com/your-username/project-name.git
+git clone git clone https://github.com/chriscashen/bankist.git
 ```
 2. Navigate to the project directory:
 ```
-cd project-name
+cd bankist
 ```
 3. Install dependencies:
 ```
